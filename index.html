@@ -3,8 +3,20 @@
     <head>
         <title>Game title</title>
     </head>
-    <body style="background-color:#1e1e1e"> <!-- Learned this from here: https://www.tutorialspoint.com/How-to-set-background-color-in-HTML -->
-        <canvas id="gameCanvas" width="1920" height="1080"></canvas>
+    <body style="background-color:#1e1e1e"> <!--Sets background to grey-->
+        <canvas id="gameCanvas" width="1280" height="720"></canvas>
+        
+        <!--Script makes canvas white to stand out from grey background-->
+        <script>
+            var canvas = document.getElementById("gameCanvas");
+            var canvasContext = canvas.getContext("2d");
+            canvasContext.fillStyle = "#ffffff";
+            canvasContext.fillRect(0,0,1280,720);
+        </script>
+
+        <img src="playerSprite.png" id="playerSprite" style="display:none;">
+        
+        <script src="player.js"></script>
         <script src="game.js"></script>
     </body>
 </html>
