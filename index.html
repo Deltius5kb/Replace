@@ -3,10 +3,10 @@
     <head>
         <title>Game title</title>
     </head>
-    <body style="background-color:#1e1e1e"> <!--Sets background to grey-->
+    <body style="background-color:#1e1e1e"> <!-- Sets background to grey-->
         <canvas id="gameCanvas" width="1280" height="720"></canvas>
         
-        <!--Script makes canvas white to stand out from grey background-->
+        <!-- Script makes canvas white to stand out from grey background-->
         <script>
             var canvas = document.getElementById("gameCanvas");
             var canvasContext = canvas.getContext("2d");
@@ -14,11 +14,13 @@
             canvasContext.fillRect(0,0,1280,720);
         </script>
 
-        <img src="playerSprite.png" id="playerSprite" style="display:none;">
-        <img src="floorSprite.png" id="floorSprite" style="display:none;">
+        <img src="assets/playerSprite.png" id="playerSprite" style="display:none;">
+        <img src="assets/floorSprite.png" id="floorSprite" style="display:none;">
+        <img src="assets/wall200x50.png" id="wall200x50" style="display:none;">
         
-        <script src="player.js"></script>
-        <script src="movement.js"></script>
-        <script src="game.js"></script>
+        <script src="scripts/player.js"></script>
+        <script src="scripts/mapObject.js"></script>
+        <script src="scripts/movement.js"></script>
+        <script src="scripts/game.js"></script>
     </body>
 </html>
