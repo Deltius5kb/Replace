@@ -1,10 +1,12 @@
 // This is a movement script for the player, it also handles collision
 const gravity = 600;
 const strafeSpeed = 500;
+const playerJumpSpeed = 400;
+
 // State of movement keys, gets evaluated every frame to smoothen out movement
 const movementKeyStates = {
     a: false,
-    space: false,
+    w: false,
     d: false
 }
 
@@ -25,6 +27,7 @@ function collides(a, b)
 function ApplyGravityToPlayer(){
     // Checks if the player is colliding with any floor images
     if (collides(player, floorObject)){
+        player.canJump = true;
         return;
     }
     // If not collided then it will move the player down a set amount per second passed
@@ -43,6 +46,7 @@ function ApplyGravityToPlayer(){
     }
     // Otherwise moves the player to the floor
     else{
+        player.canJump = true;
         player.y = floorObject.y - player.height;
     }
 }
@@ -61,7 +65,7 @@ function EvaluateMovement(){
 
         // Checks if player would collide with another object this frame
         var objectPlayerWouldCollideWith = null;
-        for (var i; i <= terrainObjects.length; i++){
+        for (var i = 0; i < terrainObjects.length; i++){
             if (terrainObjects[i].x >= (player.x + player.width) && collides(imaginaryPlayer, terrainObjects[i])){
                 objectPlayerWouldCollideWith = terrainObjects[i];
             }
@@ -89,7 +93,7 @@ function EvaluateMovement(){
 
         // Checks if player would collide with another object this frame
         var objectPlayerWouldCollideWith = null;
-        for (var i; i <= terrainObjects.length; i++){
+        for (var i = 0; i < terrainObjects.length; i++){
             if (terrainObjects[i].x <= player.x && collides(imaginaryPlayer, terrainObjects[i])){
                 objectPlayerWouldCollideWith = terrainObjects[i];
             }
@@ -97,16 +101,36 @@ function EvaluateMovement(){
 
         // If player would collide with another object (as in an object was found to collide with the new position)
         if (objectPlayerWouldCollideWith != null){
-            player.x = objectPlayerWouldCollideWith.x; // Sets player to be touching new object
+            player.x = objectPlayerWouldCollideWith.x + objectPlayerWouldCollideWith.width; // Sets player to be touching new object
         }
         // If player wouldn't collide with anything else
         else{
             player.x -= spaceRequired; // Moves player required amount of space
         }
     }
+
+    // Jumping
+    if (movementKeyStates.w == true){
+        // Prevents infinite jumping
+        player.canJump = false;
+
+        // If player hasn't reached the apex of their jump yet
+        if (player.jumpHeight < player.maxJumpHeight){
+            // Calculates jump height based on time passed since previous frame
+            var jump = Math.round(playerJumpSpeed * timeSincePreviousFrame / 1000);
+            
+            // Ensures player doesn't jump too high if timeSincePreviousFrame is too large
+            if (player.jumpHeight + jump > player.maxJumpHeight){
+                jump = player.maxJumpHeight - player.jumpHeight;
+                movementKeyStates.w = false;
+            }
+            player.y -= jump;
+            player.jumpHeight += jump;
+        }
+    }
 }
 
-// Learned this from here: https://stackoverflow.com/questions/16089421/how-do-i-detect-keypresses-in-javascript
+// Keypress detection
 document.addEventListener("keydown",  function onEvent(event){
     // Go right
     if (event.key == "d" || event.key == "D"){
@@ -117,10 +141,12 @@ document.addEventListener("keydown",  function onEvent(event){
     else if (event.key == "a" || event.key == "A"){
         movementKeyStates.a = true;
     }
+    // Go up
+    else if ((event.key == "w" || event.key == "W" || event.key == " ") && player.canJump == true){
+        movementKeyStates.w = true;
+    }
 });
 
-
-// Learned this from here: https://stackoverflow.com/questions/16089421/how-do-i-detect-keypresses-in-javascript
 document.addEventListener("keyup",  function onEvent(event){
     // Stop right
     if (event.key == "d" || event.key == "D"){
@@ -129,5 +155,10 @@ document.addEventListener("keyup",  function onEvent(event){
     // Stop left
     else if (event.key == "a" || event.key == "A"){
         movementKeyStates.a = false;
+    }
+    // Go up
+    else if (event.key == "w" || event.key == "W" || event.key == " "){
+        movementKeyStates.w = false;
+        player.jumpHeight = 0;
     }
 });

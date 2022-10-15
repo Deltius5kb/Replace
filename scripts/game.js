@@ -9,7 +9,9 @@ function gameLoop(timeNow) {
     timeSincePreviousFrame = timeNow - timeAtPreviousFrame;
     timeAtPreviousFrame = timeNow;
    
-    ApplyGravityToPlayer();
+    if (movementKeyStates.w == false){
+        ApplyGravityToPlayer();
+    }
     EvaluateMovement();
     DrawThingsOnScreen();
 
@@ -25,9 +27,17 @@ function DrawThingsOnScreen(){
     context.drawImage(floorObject.sprite, floorObject.x, floorObject.y); // Draws the floor on screen
     
     // Draws other objects on screen
-    for (var i; i <= terrainObjects.length; i++){
+    for (var i = 0; i < terrainObjects.length; i++){
         context.drawImage(terrainObjects[i].sprite, terrainObjects[i].x, terrainObjects[i].y);
     }
+}
+
+// Function to make terrain objects array without making tons of global variables
+function DefineTerrainObjects(){
+    const wall1 = new Terrain(300, 620, document.getElementById("wall200x50").width, document.getElementById("wall200x50").height, document.getElementById("wall200x50"));
+    const wall2 = new Terrain(600, 620, document.getElementById("wall200x50").width, document.getElementById("wall200x50").height, document.getElementById("wall200x50"));
+    const terrainObjects = [wall1, wall2];
+    return terrainObjects;
 }
 
 var canvas = document.getElementById("gameCanvas"); // Gets context object which is used to draw things on the canvas
@@ -35,10 +45,8 @@ var context = canvas.getContext("2d");
 
 const player = new PlayerObject(); // Creates new global player object, see player.js for info
 const floorObject = new Terrain(0, 670, document.getElementById("floorSprite").width, document.getElementById("floorSprite").height, document.getElementById("floorSprite"));
+const terrainObjects = DefineTerrainObjects();
 
-const terrainObjects = [
-    new Terrain(300, 600, document.getElementById("wall200x50").width, document.getElementById("wall200x50").height, document.getElementById("wall200x50"))
-]
 
 var timeAtPreviousFrame = 0;
 var timeSincePreviousFrame;
