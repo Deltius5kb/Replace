@@ -25,29 +25,47 @@ function collides(a, b)
 
 // This function pulls the player down if the player isn't touching the floor, called every frame
 function ApplyGravityToPlayer(){
+    // Makes object to pass into collides(), sort of an "imaginary" player
+    var imaginaryPlayer = {
+        x: player.x,
+        y: player.y + 1,
+        height: player.height,
+        width: player.width
+    }
     // Checks if the player is colliding with any floor images
-    if (collides(player, floorObject)){
-        player.canJump = true;
-        return;
+    for (var i = 0; i < terrainObjects.length; i++){
+        if (collides(imaginaryPlayer, terrainObjects[i])){
+            player.canJump = true;
+            return;
+        }
     }
     // If not collided then it will move the player down a set amount per second passed
     var spaceRequired = Math.round(gravity * timeSincePreviousFrame / 1000);
 
     // Makes object to pass into collides(), sort of an "imaginary" player
-    const imaginaryPlayer = {
+    imaginaryPlayer = {
         x: player.x,
         y: player.y + spaceRequired,
         height: player.height,
         width: player.width
     }
+
+    // Check each of them for collisions with imaginary player
     // If there is space below the player, moves them to the new position
-    if (!(collides(imaginaryPlayer, floorObject))){
+    var collidingObject = null;
+    for (var i = 0; i < terrainObjects.length; i++){
+        if (collides(imaginaryPlayer, terrainObjects[i])){
+            collidingObject = i;
+        }
+    }
+
+    // Moves player down if it doesn't collide with anything in new position
+    if (collidingObject == null){
         player.y += spaceRequired;
     }
-    // Otherwise moves the player to the floor
+    // Moves player to the object it would otherwise collide with
     else{
-        player.canJump = true;
-        player.y = floorObject.y - player.height;
+        player.y = terrainObjects[collidingObject].y - player.height;
     }
 }
 
