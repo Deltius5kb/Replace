@@ -9,6 +9,7 @@ class PlayerObject{
         this.jumpHeight = 0;
         this.maxJumpHeight = 200;
         this.canJump = false;
+        this.strafeSpeed = 1000; // Usually 500 but set to 1000 for debug reasons
     }
     Render(){
         if (this.x > 690){

@@ -1,6 +1,5 @@
 // This is a movement script for the player, it also handles collision
 const gravity = 600;
-const strafeSpeed = 500;
 const playerJumpSpeed = 400;
 
 // State of movement keys, gets evaluated every frame to smoothen out movement
@@ -74,7 +73,7 @@ function ApplyGravityToPlayer(){
 function EvaluateMovement(){
     if (movementKeyStates.d == true){
         // Check if space available to the right of player
-        var spaceRequired = Math.round(strafeSpeed * timeSincePreviousFrame / 1000);
+        var spaceRequired = Math.round(player.strafeSpeed * timeSincePreviousFrame / 1000);
         const imaginaryPlayer = {
             x: player.x + spaceRequired,
             y: player.y,
@@ -102,7 +101,7 @@ function EvaluateMovement(){
     
     if (movementKeyStates.a == true){
         // Check if space available to the right of player
-        var spaceRequired = Math.round(strafeSpeed * timeSincePreviousFrame / 1000);
+        var spaceRequired = Math.round(player.strafeSpeed * timeSincePreviousFrame / 1000);
         const imaginaryPlayer = {
             x: player.x - spaceRequired,
             y: player.y,
