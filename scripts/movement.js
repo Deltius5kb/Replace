@@ -39,6 +39,7 @@ function ApplyGravityToPlayer(){
             return;
         }
     }
+    player.canJump = false;
     // If not collided then it will move the player down a set amount per second passed
     var spaceRequired = Math.round(gravity * timeSincePreviousFrame / 1000);
 
