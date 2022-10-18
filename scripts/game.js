@@ -19,11 +19,16 @@ function DrawThingsOnScreen(){
     canvasContext.fillStyle = "#ffffff";
     canvasContext.fillRect(0,0,1280,720);
     
+    var xdisplacement = 0;
+    if (player.x > 690){
+        xdisplacement = player.x - 690;
+    }
+
     player.Render(); // Draws player on screen
     
     // Draws other objects on screen
     for (var i = 0; i < terrainObjects.length; i++){
-        context.drawImage(terrainObjects[i].sprite, terrainObjects[i].x, terrainObjects[i].y);
+        context.drawImage(terrainObjects[i].sprite, terrainObjects[i].x - xdisplacement, terrainObjects[i].y);
     }
 }
 

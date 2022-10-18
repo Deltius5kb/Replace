@@ -11,6 +11,11 @@ class PlayerObject{
         this.canJump = false;
     }
     Render(){
-        context.drawImage(this.sprite, this.x, this.y);
+        if (this.x > 690){
+            context.drawImage(this.sprite, 690, this.y);
+        }
+        else{
+            context.drawImage(this.sprite, this.x, this.y);
+        }
     }
 }
