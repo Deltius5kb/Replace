@@ -1,7 +1,3 @@
-// TODO debug applygravitytoplayer() as it doesnt work properly(?)
-// TODO for some reason timesinceprevious frame is coming out as nothing 
-
-
 // This is a good gameloop implementation as I learned from here: https://spicyyoghurt.com/tutorials/html5-javascript-game-development/create-a-proper-game-loop-with-requestanimationframe
 function gameLoop(timeNow) {
     // Gets time since last frame and then sets the time at previous frame to current time
