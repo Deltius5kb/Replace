@@ -5,6 +5,14 @@
     </head>
     <body style="background-color:#1e1e1e"> <!-- Sets background to grey-->
         <canvas id="gameCanvas" width="1280" height="720"></canvas>
+        
+        <!-- Script makes canvas white to stand out from grey background-->
+        <script>
+            var canvas = document.getElementById("gameCanvas");
+            var canvasContext = canvas.getContext("2d");
+            canvasContext.fillStyle = "#ffffff";
+            canvasContext.fillRect(0,0,1280,720);
+        </script>
 
         <img src="assets/playerSprite.png" id="playerSprite" style="display:none;">
         <img src="assets/floorSprite.png" id="floorSprite" style="display:none;">
