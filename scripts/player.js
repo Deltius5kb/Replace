@@ -9,12 +9,18 @@ class PlayerObject{
         this.jumpHeight = 0;
         this.maxJumpHeight = 200;
         this.canJump = false;
-        this.strafeSpeed = 1000; // Usually 500 but set to 1000 for debug reasons
+        this.strafeSpeed = 500;
     }
     Render(){
-        if (this.x > 690){
+        // If player is in the final room
+        if (this.x > 9560 - 690){
+            context.drawImage(this.sprite, this.x - (9560 - 1380), this.y);
+        }
+        // If the player is past the middle
+        else if (this.x > 690){
             context.drawImage(this.sprite, 690, this.y);
         }
+        // If the player is at the start
         else{
             context.drawImage(this.sprite, this.x, this.y);
         }
