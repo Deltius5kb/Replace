@@ -6,6 +6,5 @@ class Terrain{
         this.width = width;
         this.height = height;
         this.sprite = sprite;
-        this.active = true;
     }
 }

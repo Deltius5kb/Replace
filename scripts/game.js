@@ -33,9 +33,7 @@ function DrawThingsOnScreen(){
 
     // Draws other objects on screen
     for (var i = 0; i < terrainObjects.length; i++){
-        if (terrainObjects[i].active == true){
-            context.drawImage(terrainObjects[i].sprite, terrainObjects[i].x - xdisplacement, terrainObjects[i].y);
-        }
+        context.drawImage(terrainObjects[i].sprite, terrainObjects[i].x - xdisplacement, terrainObjects[i].y);
     }
 }
 
@@ -45,17 +43,13 @@ function DefineTerrainObjects(){
     const wall1 = new Terrain(-100, 0, sprite.width, sprite.height, sprite);
     const wall2 = new Terrain(9660, 0, sprite.width, sprite.height, sprite); 
 
-    sprite = document.getElementById("wall200x50");
-    const block1 = new Terrain(300, 620, sprite.width, sprite.height, sprite);
-    const block2 = new Terrain(600, 620, sprite.width, sprite.height, sprite);
-    
     sprite = document.getElementById("floorSprite");
     const floor = new Terrain(0, 670, sprite.width, sprite.height, sprite);
     const ceiling = new Terrain(0, -100, sprite.width, sprite.height, sprite);
 
-    terrainObjects = [ceiling, floor, wall1, wall2, block1, block2];
+    terrainObjects = [ceiling, floor, wall1, wall2];
     doors = [];
-    // Makes 7 walls that are walls seperating the rooms
+    // Makes 7 walls and doors that are walls seperating the rooms
     var thisWall;
     var wallSprite = document.getElementById("wall100x420");
     var thisDoor;
@@ -88,6 +82,11 @@ function DefineTerrainObjects(){
     }
 }
 
+function InitialiseNPCs(){
+    // Test NPC
+    // var thisNPC = new NPC(Math.round(690 - Math.round())
+}
+
 var canvas = document.getElementById("gameCanvas"); // Gets context object which is used to draw things on the canvas
 var context = canvas.getContext("2d");
 
@@ -95,6 +94,7 @@ const player = new PlayerObject(); // Creates new global player object, see play
 var terrainObjects;
 var doors;
 DefineTerrainObjects();
+var NPCs;
 
 
 var timeAtPreviousFrame = 0;

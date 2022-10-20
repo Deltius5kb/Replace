@@ -42,7 +42,11 @@ document.addEventListener("keypress", function onEvent(event){
     }
     // Opens next door when the button 9 is pressed
     else if (event.key == "9" && doors != []){
-        doors[0].active = false;
+        for (var i = 0; i < terrainObjects.length; i++){
+            if (terrainObjects[i] == doors[0]){
+                terrainObjects.splice(i,1);
+            }
+        }
         doors.splice(0, 1);
     }
 });

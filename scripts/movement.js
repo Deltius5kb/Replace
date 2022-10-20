@@ -84,7 +84,7 @@ function EvaluateMovement(){
         // Checks if player would collide with another object this frame
         var objectPlayerWouldCollideWith = null;
         for (var i = 0; i < terrainObjects.length; i++){
-            if (terrainObjects[i].x >= (player.x + player.width) && collides(imaginaryPlayer, terrainObjects[i]) && terrainObjects[i].active == true){
+            if (terrainObjects[i].x >= (player.x + player.width) && collides(imaginaryPlayer, terrainObjects[i])){
                 objectPlayerWouldCollideWith = terrainObjects[i];
             }
         }
@@ -112,7 +112,7 @@ function EvaluateMovement(){
         // Checks if player would collide with another object this frame
         var objectPlayerWouldCollideWith = null;
         for (var i = 0; i < terrainObjects.length; i++){
-            if (terrainObjects[i].x <= player.x && collides(imaginaryPlayer, terrainObjects[i]) && terrainObjects[i].active == true){
+            if (terrainObjects[i].x <= player.x && collides(imaginaryPlayer, terrainObjects[i])){
                 objectPlayerWouldCollideWith = terrainObjects[i];
             }
         }
