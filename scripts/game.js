@@ -24,15 +24,18 @@ function DrawThingsOnScreen(){
     var xdisplacement = 0;
     if (player.x > 690){
         xdisplacement = player.x - 690;
+        // Stops the camera at the final wall
+        if (xdisplacement > 9660 - 1280){
+            xdisplacement = 9660 - 1280;
+        }
     }
-
-    
-
     player.Render(); // Draws player on screen
-    
+
     // Draws other objects on screen
     for (var i = 0; i < terrainObjects.length; i++){
-        context.drawImage(terrainObjects[i].sprite, terrainObjects[i].x - xdisplacement, terrainObjects[i].y);
+        if (terrainObjects[i].active == true){
+            context.drawImage(terrainObjects[i].sprite, terrainObjects[i].x - xdisplacement, terrainObjects[i].y);
+        }
     }
 }
 
@@ -40,7 +43,7 @@ function DrawThingsOnScreen(){
 function DefineTerrainObjects(){
     var sprite = document.getElementById("wall100x1480");
     const wall1 = new Terrain(-100, 0, sprite.width, sprite.height, sprite);
-    const wall2 = new Terrain(7 * 1380, 0, sprite.width, sprite.height, sprite); 
+    const wall2 = new Terrain(9660, 0, sprite.width, sprite.height, sprite); 
 
     sprite = document.getElementById("wall200x50");
     const block1 = new Terrain(300, 620, sprite.width, sprite.height, sprite);
@@ -51,13 +54,20 @@ function DefineTerrainObjects(){
     const ceiling = new Terrain(0, -100, sprite.width, sprite.height, sprite);
 
     terrainObjects = [ceiling, floor, wall1, wall2, block1, block2];
+    doors = [];
     // Makes 7 walls that are walls seperating the rooms
     var thisWall;
     var wallSprite = document.getElementById("wall100x420");
+    var thisDoor;
+    var doorSprite = document.getElementById("wall100x300");
     for (var i = 1; i < 7; i++){
         var wallx = 1380 * i;
         thisWall = new Terrain(wallx, 0, wallSprite.width, wallSprite.height, wallSprite);
+        thisDoor = new Terrain(wallx, 420, doorSprite.width, doorSprite.height, doorSprite);
         terrainObjects.push(thisWall);
+        // Adds doors to both lists so that doors can be distinguished from other things
+        terrainObjects.push(thisDoor);
+        doors.push(thisDoor);
     }
 
     // Sort them in order of ascending y values, uses a bubble sort
@@ -76,11 +86,6 @@ function DefineTerrainObjects(){
             }
         }
     }
-
-    // // Displays the y values of each item in list 
-    // for (var i = 0; i < terrainObjects.length; i++){
-    //     console.log(terrainObjects[i].y);
-    // }
 }
 
 var canvas = document.getElementById("gameCanvas"); // Gets context object which is used to draw things on the canvas
@@ -88,6 +93,7 @@ var context = canvas.getContext("2d");
 
 const player = new PlayerObject(); // Creates new global player object, see player.js for info
 var terrainObjects;
+var doors;
 DefineTerrainObjects();
 
 

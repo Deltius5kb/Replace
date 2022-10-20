@@ -84,7 +84,7 @@ function EvaluateMovement(){
         // Checks if player would collide with another object this frame
         var objectPlayerWouldCollideWith = null;
         for (var i = 0; i < terrainObjects.length; i++){
-            if (terrainObjects[i].x >= (player.x + player.width) && collides(imaginaryPlayer, terrainObjects[i])){
+            if (terrainObjects[i].x >= (player.x + player.width) && collides(imaginaryPlayer, terrainObjects[i]) && terrainObjects[i].active == true){
                 objectPlayerWouldCollideWith = terrainObjects[i];
             }
         }
@@ -112,7 +112,7 @@ function EvaluateMovement(){
         // Checks if player would collide with another object this frame
         var objectPlayerWouldCollideWith = null;
         for (var i = 0; i < terrainObjects.length; i++){
-            if (terrainObjects[i].x <= player.x && collides(imaginaryPlayer, terrainObjects[i])){
+            if (terrainObjects[i].x <= player.x && collides(imaginaryPlayer, terrainObjects[i]) && terrainObjects[i].active == true){
                 objectPlayerWouldCollideWith = terrainObjects[i];
             }
         }
@@ -128,6 +128,7 @@ function EvaluateMovement(){
     }
 
     // Jumping
+    // TODO check for collision with objects above player, this isn't important yet because the player won't be able to hit anything by jumping but could be an issue later on
     if (movementKeyStates.w == true){
         // Prevents infinite jumping
         player.canJump = false;

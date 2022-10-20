@@ -31,6 +31,7 @@ document.addEventListener("keyup",  function onEvent(event){
 });
 
 document.addEventListener("keypress", function onEvent(event){
+    // Increases player speed when the button 0 is pressed
     if (event.key == "0"){
         if (player.strafeSpeed == 500){
             player.strafeSpeed = 2000;
@@ -38,5 +39,10 @@ document.addEventListener("keypress", function onEvent(event){
         else{
             player.strafeSpeed = 500;
         }
+    }
+    // Opens next door when the button 9 is pressed
+    else if (event.key == "9" && doors != []){
+        doors[0].active = false;
+        doors.splice(0, 1);
     }
 });
