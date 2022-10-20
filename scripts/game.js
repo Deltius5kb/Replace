@@ -29,8 +29,14 @@ function DrawThingsOnScreen(){
             xdisplacement = 9660 - 1280;
         }
     }
-    player.Render(); // Draws player on screen
+    
+    // Draws NPCs on screen
+    for (var i = 0; i < NPCs.length; i++){
+        context.drawImage(NPCs[i].sprite, NPCs[i].x - xdisplacement, NPCs[i].y);
+    }
 
+    player.Render(); // Draws player on screen
+    
     // Draws other objects on screen
     for (var i = 0; i < terrainObjects.length; i++){
         context.drawImage(terrainObjects[i].sprite, terrainObjects[i].x - xdisplacement, terrainObjects[i].y);
@@ -44,7 +50,7 @@ function DefineTerrainObjects(){
     const wall2 = new Terrain(9660, 0, sprite.width, sprite.height, sprite); 
 
     sprite = document.getElementById("floorSprite");
-    const floor = new Terrain(0, 670, sprite.width, sprite.height, sprite);
+    floor = new Terrain(0, 720 - sprite.height, sprite.width, sprite.height, sprite);
     const ceiling = new Terrain(0, -100, sprite.width, sprite.height, sprite);
 
     terrainObjects = [ceiling, floor, wall1, wall2];
@@ -81,21 +87,26 @@ function DefineTerrainObjects(){
         }
     }
 }
-
-function InitialiseNPCs(){
-    // Test NPC
-    // var thisNPC = new NPC(Math.round(690 - Math.round())
+// Places NPCs in the correct location
+function DefineNPCs(){
+    var npcSprite = document.getElementById("NPC");
+    var thisNPC;
+    for (var i = 0; i < 7; i += 2){
+        thisNPC = new NPC(1380 * i + Math.round(690 - npcSprite.width / 2), 720 - floor.height - npcSprite.height, npcSprite);
+        NPCs.push(thisNPC);
+    }
 }
 
 var canvas = document.getElementById("gameCanvas"); // Gets context object which is used to draw things on the canvas
 var context = canvas.getContext("2d");
 
 const player = new PlayerObject(); // Creates new global player object, see player.js for info
+var floor;
 var terrainObjects;
 var doors;
 DefineTerrainObjects();
-var NPCs;
-
+var NPCs = [];
+DefineNPCs();
 
 var timeAtPreviousFrame = 0;
 var timeSincePreviousFrame;

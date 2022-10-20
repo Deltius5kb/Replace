@@ -31,8 +31,15 @@ document.addEventListener("keyup",  function onEvent(event){
 });
 
 document.addEventListener("keypress", function onEvent(event){
+    if (event.key == "e" || event.key == "E"){
+        for (var i = 0; i < NPCs.length; i++){
+            if (collides(player, NPCs[i])){
+                NPCs[i].Interact();
+            }
+        }
+    }
     // Increases player speed when the button 0 is pressed
-    if (event.key == "0"){
+    else if (event.key == "0"){
         if (player.strafeSpeed == 500){
             player.strafeSpeed = 2000;
         }
