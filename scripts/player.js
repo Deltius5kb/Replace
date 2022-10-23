@@ -10,6 +10,7 @@ class PlayerObject{
         this.maxJumpHeight = 200;
         this.canJump = false;
         this.strafeSpeed = 500;
+        this.interacting = false;
     }
     Render(){
         // If player is in the final room

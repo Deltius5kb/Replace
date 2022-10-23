@@ -15,6 +15,7 @@ class NPC{
         this.playerResponses.push(responses);
     }
     Interact(){
-        console.log("Player interacted");
+        player.interacting = true; 
+        DialogueBox.SetText(this.dialogue[0], this.playerResponses[0]);
     }
 }

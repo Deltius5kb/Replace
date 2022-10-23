@@ -6,14 +6,6 @@
     <body style="background-color:#1e1e1e"> <!-- Sets background to grey-->
         <canvas id="gameCanvas" width="1280" height="720"></canvas>
         
-        <!-- Script makes canvas white to stand out from grey background-->
-        <script>
-            var canvas = document.getElementById("gameCanvas");
-            var canvasContext = canvas.getContext("2d");
-            canvasContext.fillStyle = "#ffffff";
-            canvasContext.fillRect(0,0,1280,720);
-        </script>
-
         <img src="assets/playerSprite.png" id="playerSprite" style="display:none;">
         <img src="assets/floorSprite.png" id="floorSprite" style="display:none;">
         <img src="assets/ceilingSprite.png" id="ceilingSprite" style="display:none;">
@@ -22,10 +14,12 @@
         <img src="assets/wall100x420.png" id="wall100x420" style="display:none;">
         <img src="assets/wall100x300.png" id="wall100x300" style="display:none;">
         <img src="assets/NPC.png" id="NPC" style="display:none;">
+        <img src="assets/TextBoxSprite.png" id="TextBoxSprite" style="display:none;">
         
         <script src="scripts/player.js"></script>
         <script src="scripts/mapObject.js"></script>
         <script src="scripts/NPC.js"></script>
+        <script src="scripts/TextBox.js"></script>
         <script src="scripts/controls.js"></script>
         <script src="scripts/movement.js"></script>
         <script src="scripts/game.js"></script>

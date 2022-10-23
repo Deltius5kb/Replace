@@ -57,3 +57,16 @@ document.addEventListener("keypress", function onEvent(event){
         doors.splice(0, 1);
     }
 });
+
+function CheckIfClickWasOnDialogueOption(event) {
+    if (player.interacting == true && DialogueBox.hovering != null){
+        console.log(DialogueBox.options[DialogueBox.hovering])
+    }
+}
+
+document.addEventListener("click", CheckIfClickWasOnDialogueOption);
+
+var mousePos = [];
+// Got this from https://stackoverflow.com/questions/7790725/javascript-track-mouse-position
+// Updates the value of mousePos every time the mouse is moved
+onmousemove = function(e){mousePos = [e.clientX, e.clientY]}

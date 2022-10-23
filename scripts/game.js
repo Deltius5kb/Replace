@@ -1,23 +1,7 @@
-// This is a good gameloop implementation as I learned from here: https://spicyyoghurt.com/tutorials/html5-javascript-game-development/create-a-proper-game-loop-with-requestanimationframe
-function gameLoop(timeNow) {
-    // Gets time since last frame and then sets the time at previous frame to current time
-    // Works because the function is then called by window.requestAnimationFrame(gameLoop);
-    timeSincePreviousFrame = timeNow - timeAtPreviousFrame;
-    timeAtPreviousFrame = timeNow;
-   
-    if (movementKeyStates.w == false){
-        ApplyGravityToPlayer();
-    }
-    EvaluateMovement();
-    DrawThingsOnScreen();
-
-    window.requestAnimationFrame(gameLoop); // Calls the next frame
-}
-
 function DrawThingsOnScreen(){
     // Fills the canvas with white colour
-    canvasContext.fillStyle = "#ffffff";
-    canvasContext.fillRect(0,0,1280,720);
+    context.fillStyle = "#ffffff";
+    context.fillRect(0,0,1280,720);
     
     // Finds how far past the middle the player is 
     // Moves everything to the left by however more than 690 the player has moved past
@@ -34,7 +18,7 @@ function DrawThingsOnScreen(){
     for (var i = 0; i < NPCs.length; i++){
         context.drawImage(NPCs[i].sprite, NPCs[i].x - xdisplacement, NPCs[i].y);
     }
-
+    
     player.Render(); // Draws player on screen
     
     // Draws other objects on screen
@@ -48,11 +32,11 @@ function DefineTerrainObjects(){
     var sprite = document.getElementById("wall100x1480");
     const wall1 = new Terrain(-100, 0, sprite.width, sprite.height, sprite);
     const wall2 = new Terrain(9660, 0, sprite.width, sprite.height, sprite); 
-
+    
     sprite = document.getElementById("floorSprite");
     floor = new Terrain(0, 720 - sprite.height, sprite.width, sprite.height, sprite);
-    const ceiling = new Terrain(0, -100, sprite.width, sprite.height, sprite);
-
+    const ceiling = new Terrain(0, -sprite.height, sprite.width, sprite.height, sprite);
+    
     terrainObjects = [ceiling, floor, wall1, wall2];
     doors = [];
     // Makes 7 walls and doors that are walls seperating the rooms
@@ -69,7 +53,7 @@ function DefineTerrainObjects(){
         terrainObjects.push(thisDoor);
         doors.push(thisDoor);
     }
-
+    
     // Sort them in order of ascending y values, uses a bubble sort
     var sorted = false;
     while (!sorted){
@@ -95,8 +79,36 @@ function DefineNPCs(){
         thisNPC = new NPC(1380 * i + Math.round(690 - npcSprite.width / 2), 720 - floor.height - npcSprite.height, npcSprite);
         NPCs.push(thisNPC);
     }
+    
+    var playerResponses = [
+        "Test response 1",
+        "Test response 2",
+        "Test response 3"
+    ]
+    NPCs[0].AddDialogue("This is a test dialogue", playerResponses);
 }
 
+// This is a good gameloop implementation as I learned from here: https://spicyyoghurt.com/tutorials/html5-javascript-game-development/create-a-proper-game-loop-with-requestanimationframe
+function gameLoop(timeNow) {
+    // Gets time since last frame and then sets the time at previous frame to current time
+    // Works because the function is then called by window.requestAnimationFrame(gameLoop);
+    timeSincePreviousFrame = timeNow - timeAtPreviousFrame;
+    timeAtPreviousFrame = timeNow;
+   
+    if (player.interacting == false){
+        if (movementKeyStates.w == false){
+            ApplyGravityToPlayer();
+        }
+        EvaluateMovement();
+        DrawThingsOnScreen();
+    }
+    
+    else{
+        DialogueBox.Render();
+    }
+
+    window.requestAnimationFrame(gameLoop); // Calls the next frame
+}
 var canvas = document.getElementById("gameCanvas"); // Gets context object which is used to draw things on the canvas
 var context = canvas.getContext("2d");
 
@@ -107,6 +119,7 @@ var doors;
 DefineTerrainObjects();
 var NPCs = [];
 DefineNPCs();
+const DialogueBox = new TextBox();
 
 var timeAtPreviousFrame = 0;
 var timeSincePreviousFrame;
