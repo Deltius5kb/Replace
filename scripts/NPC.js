@@ -9,6 +9,9 @@ class NPC{
         this.dialogue = [];
         // This will be an array of arrays (each array being all 3 dialogue options after each dialogue)
         this.playerResponses = [];
+        this.playerChoice = null;
+
+        this.active = true;
     }
     AddDialogue(dialogue, responses){
         this.dialogue.push(dialogue);

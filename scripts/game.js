@@ -16,7 +16,9 @@ function DrawThingsOnScreen(){
     
     // Draws NPCs on screen
     for (var i = 0; i < NPCs.length; i++){
-        context.drawImage(NPCs[i].sprite, NPCs[i].x - xdisplacement, NPCs[i].y);
+        if (NPCs[i].active == true){
+            context.drawImage(NPCs[i].sprite, NPCs[i].x - xdisplacement, NPCs[i].y);
+        }
     }
     
     player.Render(); // Draws player on screen
@@ -78,14 +80,38 @@ function DefineNPCs(){
     for (var i = 0; i < 7; i += 2){
         thisNPC = new NPC(1380 * i + Math.round(690 - npcSprite.width / 2), 720 - floor.height - npcSprite.height, npcSprite);
         NPCs.push(thisNPC);
+        //TODO remove this when I'm done with it
+        var playerResponses = [
+            `NPC${i / 2} Test response 1`,
+            `NPC${i / 2} Test response 2`,
+            `NPC${i / 2} Test response 3`
+        ]
+        thisNPC.AddDialogue(`NPC${i / 2} Test dialogue`, playerResponses);
     }
-    
-    var playerResponses = [
-        "Test response 1",
-        "Test response 2",
-        "Test response 3"
-    ]
-    NPCs[0].AddDialogue("This is a test dialogue", playerResponses);
+}
+
+// Opens next closest door by removing it from the list of things to render and check collision for
+function OpenNextDoor(){
+    for (var i = 0; i < terrainObjects.length; i++){
+        if (terrainObjects[i] == doors[0]){
+            terrainObjects.splice(i,1);
+        }
+    }
+    doors.splice(0, 1);
+}
+
+// Runs when the player clicks on a dialogue option
+function PlayerClickedOnOption(){
+    NPCs[currentNPC].playerChoice = DialogueBox.hovering + 1;
+    NPCs[currentNPC].active = false;
+    currentNPC += 1;
+
+    // Gives player controls again
+    player.interacting = false;
+    DialogueBox.hasBeenChanged = false;
+
+    OpenNextDoor();
+    console.log(DialogueBox.options[DialogueBox.hovering]);
 }
 
 // This is a good gameloop implementation as I learned from here: https://spicyyoghurt.com/tutorials/html5-javascript-game-development/create-a-proper-game-loop-with-requestanimationframe
@@ -95,6 +121,7 @@ function gameLoop(timeNow) {
     timeSincePreviousFrame = timeNow - timeAtPreviousFrame;
     timeAtPreviousFrame = timeNow;
    
+    // If player is not talking to an NPC
     if (player.interacting == false){
         if (movementKeyStates.w == false){
             ApplyGravityToPlayer();
@@ -103,23 +130,32 @@ function gameLoop(timeNow) {
         DrawThingsOnScreen();
     }
     
+    // When a player is talking to an NPC
     else{
+        // Logic for what the textbox displays
         DialogueBox.Render();
+        if (DialogueBox.hasBeenChanged == false){
+            // !temp
+            if (1 == 1){}
+        }
     }
-
     window.requestAnimationFrame(gameLoop); // Calls the next frame
 }
+
 var canvas = document.getElementById("gameCanvas"); // Gets context object which is used to draw things on the canvas
 var context = canvas.getContext("2d");
 
-const player = new PlayerObject(); // Creates new global player object, see player.js for info
 var floor;
 var terrainObjects;
 var doors;
-DefineTerrainObjects();
 var NPCs = [];
-DefineNPCs();
+var currentNPC = 0;
+
+const player = new PlayerObject();
 const DialogueBox = new TextBox();
+
+DefineTerrainObjects();
+DefineNPCs();
 
 var timeAtPreviousFrame = 0;
 var timeSincePreviousFrame;

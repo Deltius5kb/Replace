@@ -1,5 +1,7 @@
 class TextBox{
     constructor(){
+        // Turns true when the textbox text changes and turns false when the player makes a choice
+        this.hasBeenChanged = false;
         // Sprite is used to draw the background of the textbox, everything is then drawn on top of that
         this.sprite = document.getElementById("TextBoxSprite");
         // X and Y position of the textbox so that it is centered

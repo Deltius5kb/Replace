@@ -33,7 +33,7 @@ document.addEventListener("keyup",  function onEvent(event){
 document.addEventListener("keypress", function onEvent(event){
     if (event.key == "e" || event.key == "E"){
         for (var i = 0; i < NPCs.length; i++){
-            if (collides(player, NPCs[i])){
+            if (NPCs[i].active == true && collides(player, NPCs[i])){
                 NPCs[i].Interact();
             }
         }
@@ -49,24 +49,20 @@ document.addEventListener("keypress", function onEvent(event){
     }
     // Opens next door when the button 9 is pressed
     else if (event.key == "9" && doors != []){
-        for (var i = 0; i < terrainObjects.length; i++){
-            if (terrainObjects[i] == doors[0]){
-                terrainObjects.splice(i,1);
-            }
-        }
-        doors.splice(0, 1);
+        OpenNextDoor();
     }
 });
 
 function CheckIfClickWasOnDialogueOption(event) {
+    // If player is interacting with an NPC and they are hovering over an option when clicking
     if (player.interacting == true && DialogueBox.hovering != null){
-        console.log(DialogueBox.options[DialogueBox.hovering])
+        PlayerClickedOnOption();
     }
 }
 
 document.addEventListener("click", CheckIfClickWasOnDialogueOption);
 
-var mousePos = [];
 // Got this from https://stackoverflow.com/questions/7790725/javascript-track-mouse-position
 // Updates the value of mousePos every time the mouse is moved
+var mousePos = [];
 onmousemove = function(e){mousePos = [e.clientX, e.clientY]}
