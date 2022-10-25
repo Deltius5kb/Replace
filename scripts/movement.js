@@ -1,5 +1,7 @@
 // This is a movement script for the player, it also handles collision
+// Speed at which the player is moved downwards when not jumping (per second)
 const gravity = 600;
+// Speed at which the player is moved upwards when not jumping (per second)
 const playerJumpSpeed = 400;
 
 // State of movement keys, gets evaluated every frame to smoothen out movement
@@ -38,6 +40,7 @@ function ApplyGravityToPlayer(){
             return;
         }
     }
+    // If player is not colliding with the floor then they can no longer jump
     player.canJump = false;
     // If not collided then it will move the player down a set amount per second passed
     var spaceRequired = Math.round(gravity * timeSincePreviousFrame / 1000);
@@ -128,7 +131,7 @@ function EvaluateMovement(){
     }
 
     // Jumping
-    // TODO check for collision with objects above player, this isn't important yet because the player won't be able to hit anything by jumping but could be an issue later on
+    // TODO check for collision with objects above player, not important because of the map that I have. 
     if (movementKeyStates.w == true){
         // Prevents infinite jumping
         player.canJump = false;

@@ -1,0 +1,34 @@
+The trials are going to begin (ask 2)
+    - Trials?
+        The trials set by the ancient ones
+    - Where am I?
+        Irrelevant.
+    - Who are you?
+        A servant of Lua
+
+2 trials remain (ask 2)
+    - Allow the player to ask the question they didn't ask from the first interaction
+        Stop asking questions mortal.
+    - Why am I here?
+        A peacekeeper must be instated
+    - How did I get here?
+        The ancient ones brought you here to do the trials
+
+Only 1 trial remains, are you excited?
+    - What's happens after the final trial?
+        ...
+    - Whichever was not asked previously
+        ENOUGH QUESTIONS, DIE (stabs him)
+    - ...
+
+------------
+We are the ancient ones, as old as time...
+We instate the guardians of planets...
+You defeated the moon lord and showed great promise...
+You have been deemed worthy, the new moon lord has been chosen
+    - (Peace)
+        We are glad you accept the role, the ritual will now begin.
+    - (Neutral)
+        The ritual will now begin.
+    - (Violence)
+        A shame that such a promising successor would act so foolish, your end is now.
