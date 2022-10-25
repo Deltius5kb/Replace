@@ -8,3 +8,4 @@ class Terrain{
         this.height = sprite.height;
     }
 }
+

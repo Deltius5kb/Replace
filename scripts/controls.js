@@ -1,19 +1,17 @@
 // This file contains the event listeners and what happens when keys are pressed
-
 // Keypress detection
-// movementKeyStates is a global array from game.js that is used in movement.js
 document.addEventListener("keydown",  function onEvent(event){
     // Go right
     if (event.key == "d" || event.key == "D"){
-        movementKeyStates.d = true;
-   }
+        game.player.movementKeyStates.d = true;
+    }
     // Go left
     else if (event.key == "a" || event.key == "A"){
-        movementKeyStates.a = true;
+        game.player.movementKeyStates.a = true;
     }
     // Go up
-    else if ((event.key == "w" || event.key == "W" || event.key == " ") && player.canJump == true){
-        movementKeyStates.w = true;
+    else if ((event.key == "w" || event.key == "W" || event.key == " ") && game.player.canJump == true){
+        game.player.movementKeyStates.w = true;
     }
 });
 
@@ -21,56 +19,57 @@ document.addEventListener("keydown",  function onEvent(event){
 document.addEventListener("keyup",  function onEvent(event){
     // Stop right
     if (event.key == "d" || event.key == "D"){
-        movementKeyStates.d = false;
+        game.player.movementKeyStates.d = false;
     }
     // Stop left
     else if (event.key == "a" || event.key == "A"){
-        movementKeyStates.a = false;
+        game.player.movementKeyStates.a = false;
     }
     // Go up
     else if (event.key == "w" || event.key == "W" || event.key == " "){
-        movementKeyStates.w = false;
-        // Player is a global variable from game.js
+        game.player.movementKeyStates.w = false;
         // Player.jumpHeight is an attribute that determines when the player should stop going upwards, it is used in movement.js
-        player.jumpHeight = 0;
+        game.player.jumpHeight = 0;
     }
 });
 
 // Single keypresses are bad for holding
 document.addEventListener("keypress", function onEvent(event){
-    if (event.key == "e" || event.key == "E"){
-        // Checks if the player pressed E while colliding with any NPCs
-        for (var i = 0; i < NPCs.length; i++){
-            if (collides(player, NPCs[i])){
-                player.interacting = true;
-            }
-        }
+    // If player presses E when on top of an NPC
+    if ((event.key == "e" || event.key == "E") && collides(game.player, game.currentNPC) && game.currentNPC.npcStatus == "idle"){
+        game.currentNPC.Interact();
+    }
+
+    // If NPC textbox is visible
+    else if (game.currentNPC.npcStatus == "waiting for confirmation"){
+        game.currentNPC.PlayerConfirmedOnResponse();
     }
 
     // Below are debug tools
     // Increases player speed when the button 0 is pressed
     else if (event.key == "0"){
-        if (player.strafeSpeed == 500){
-            player.strafeSpeed = 2000;
+        if (game.player.strafeSpeed == 500){
+            game.player.strafeSpeed = 2000;
         }
         else{
-            player.strafeSpeed = 500;
+            game.player.strafeSpeed = 500;
         }
     }
     // Opens next door when the button 9 is pressed
-    else if (event.key == "9" && doors != []){
-        OpenNextDoor();
+    else if (event.key == "9" && game.doors != []){
+        game.OpenNextDoor();
     }
 });
 
 // When player clicks
 document.addEventListener("click", function CheckIfClickWasOnDialogueOption(event){
     // If player is interacting with an NPC and they are hovering over an option when clicking
-    if (player.interacting == true && dialogueBox.hovering != null){
-        var playerChoice = dialogueBox.hovering + 1;
-        // dialogueBox is a TextBox object from TextBox.js
-        // Clicked on holds the value for what choice the player clicked on, it is used in game.js
-        dialogueBox.clickedOn = playerChoice;
+    if (game.currentNPC.npcStatus == "waiting for response" && game.currentNPC.dialogueBox.hovering != null){
+        game.currentNPC.PlayerMadeChoice();
+    }
+    // If NPC textbox is visible
+    else if (game.currentNPC.npcStatus == "waiting for confirmation"){
+        game.currentNPC.PlayerConfirmedOnResponse();
     }
 });
 
