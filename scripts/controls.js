@@ -49,7 +49,7 @@ document.addEventListener("keypress", function onEvent(event){
     // Increases player speed when the button 0 is pressed
     else if (event.key == "0"){
         if (game.player.strafeSpeed == 500){
-            game.player.strafeSpeed = 2000;
+            game.player.strafeSpeed = 4000;
         }
         else{
             game.player.strafeSpeed = 500;
@@ -58,6 +58,10 @@ document.addEventListener("keypress", function onEvent(event){
     // Opens next door when the button 9 is pressed
     else if (event.key == "9" && game.doors != []){
         game.OpenNextDoor();
+    }
+    else if (event.key == "1"){
+        game.doors = [];
+        game.player.x = game.currentNPC.x;
     }
 });
 

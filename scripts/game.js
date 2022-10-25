@@ -71,20 +71,20 @@ class Game{
                 this.player.EvaluateMovement();
                 this.DrawThingsOnScreen();
             }
-    
+            
             // If player needs to make a choice 
             else if (this.currentNPC.npcStatus == "waiting for response"){
                 this.currentNPC.dialogueBox.FindHovering();
                 this.currentNPC.dialogueBox.Render();
             }
-    
+            
             // If player needs to confirm they have seen the response
             else if (this.currentNPC.npcStatus == "waiting for confirmation"){
                 this.currentNPC.textBox.Render();
             }
             
             // When a player is talking to an NPC
-            else if (this.currentNPC.npcStatus == "finished"){
+            else if (this.currentNPC.npcStatus == "finished" && this.NPCs.length > 1){
                 // Ends interaction
                 this.OpenNextDoor();
                 this.GivePlayerControl();
@@ -92,19 +92,19 @@ class Game{
                 // Removes first NPC in array and updates new curretNPC
                 this.NPCs.splice(0, 1);
                 this.currentNPC = this.NPCs[0];
-    
+                
                 // Setup next NPC ready for dialogue 
                 this.SetupNextDialogue();
-    
-                // If all NPC have been talked to the game ends
-                if (this.NPCs.length == 0){
-                    this.#gameState == ending;
-                    this.context.globalAlpha = 0;
-                    this.context.fillStyle = "#000000";
-                }
+                
+            }
+            // If all NPC have been talked to the game ends
+            else if (this.NPCs.length == 1){
+                this.#gameState = "ending";
+                this.context.globalAlpha = 0;
+                this.context.fillStyle = "#000000";
             }
         }
-
+        
         else if (this.#gameState == "ending"){
             this.#timeSinceGameEnd += this.timeSincePreviousFrame;
             this.context.globalAlpha += 1 / 30000000 * this.#timeSinceGameEnd;
@@ -219,8 +219,8 @@ class Game{
     DefineTerrainObjects(){
         // The 2 walls on either side of the map
         var sprite = document.getElementById("wall100x1480");
-        const wall1 = new Terrain(0, 0, sprite);
-        const wall2 = new Terrain(9660, 0, sprite); 
+        const wall1 = new Terrain(-100, 0, sprite);
+        const wall2 = new Terrain(9560, 0, sprite); 
         
         // Floor and ceiling
         sprite = document.getElementById("floorSprite");
@@ -235,7 +235,7 @@ class Game{
         var thisDoor;
         var doorSprite = document.getElementById("wall100x300");
         for (var i = 1; i < 7; i++){
-            var wallx = 1380 * i;
+            var wallx = 1380 * i - 100;
             thisWall = new Terrain(wallx, 0, wallSprite);
             thisDoor = new Terrain(wallx, 420, doorSprite);
             this.terrainObjects.push(thisWall);
@@ -271,12 +271,13 @@ class Game{
         
         // Finds how far past the middle the player is 
         // Moves everything to the left by however more than 690 the player has moved past, ie keeps the player centered
+        
         var xdisplacement = 0;
         if (this.player.x > 690){
             xdisplacement = this.player.x - 690;
             // Stops the camera at the final wall
-            if (xdisplacement > 9560 - 1180){
-                xdisplacement = 9560 - 1180;
+            if (xdisplacement > 9660 - 1280){
+                xdisplacement = 9660 - 1280;
             }
         }
         
@@ -286,7 +287,7 @@ class Game{
         }
         
         // Draws player on screen
-        this.player.Render(); 
+        game.context.drawImage(this.player.sprite, this.player.x - xdisplacement, this.player.y);
         
         // Draws other objects on screen
         for (var i = 0; i < this.terrainObjects.length; i++){

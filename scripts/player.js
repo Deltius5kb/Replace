@@ -1,12 +1,11 @@
 // Class for the player
 class PlayerObject{
-    #sprite;
     constructor(){
-        this.#sprite = document.getElementById("playerSprite");
+        this.sprite = document.getElementById("playerSprite");
         this.x = 0;
         this.y = 0;
-        this.width = this.#sprite.width;
-        this.height = this.#sprite.height;
+        this.width = this.sprite.width;
+        this.height = this.sprite.height;
         // Current jump height
         this.jumpHeight = 0;
         this.maxJumpHeight = 200;
@@ -25,21 +24,6 @@ class PlayerObject{
         }
     }
 
-    Render(){
-        // If player is in the final room
-        if (this.x > 9560 - 690){
-            game.context.drawImage(this.#sprite, this.x - (9560 - 1380), this.y);
-        }
-        // If the player is past the middle
-        else if (this.x > 690){
-            game.context.drawImage(this.#sprite, 690, this.y);
-        }
-        // If the player is at the start
-        else{
-            game.context.drawImage(this.#sprite, this.x, this.y);
-        }
-    }
-    
     // This function is called every frame to handle player inputting movement keys
     EvaluateMovement(){
         if (this.movementKeyStates.d == true){

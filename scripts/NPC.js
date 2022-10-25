@@ -62,7 +62,7 @@ class NPC{
             // Makes it so that the textbox is displayed and not the dialoguebox
             this.npcStatus = "waiting for confirmation";
             // Adds first line of text to textbox
-            this.textBox.SetText(this.#monologueText.slice(0,1));
+            this.textBox.SetText(this.#monologueText.splice(0,1)[0]);
         }
 
         else{
@@ -93,6 +93,7 @@ class NPC{
         else{
             this.textBox.SetText(NPCResponse);
             this.npcStatus = "waiting for confirmation";
+            // Moves unused dialogue to game.missedDialogue
             for (var i = 0; i < this.#options.length; i++){
                 game.missedDialogue.push([this.#options.splice(0, 1)[0], this.#responses.splice(0, 1)[0]]);
             }
@@ -102,12 +103,12 @@ class NPC{
     // Called from controls.js
     PlayerConfirmedOnResponse(){
         if (this.#monologueMode){
-            if (this.#monologueText == []){
+            if (this.#monologueText.length == 1){
                 this.#monologueMode = false;
                 this.Interact();
             }
             else{
-                this.textBox.SetText(this.#monologueText.splice(0, 1));
+                this.textBox.SetText(this.#monologueText.splice(0, 1)[0]);
             }
         }
         else{
