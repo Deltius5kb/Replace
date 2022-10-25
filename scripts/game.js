@@ -2,6 +2,9 @@
 class Game{
     #canvas;
     #timeAtPreviousFrame;
+    #gameState;
+    #anim;
+    #timeSinceGameEnd;
     constructor(){
         // This is unused anywhere else
         this.#canvas = document.getElementById("gameCanvas");
@@ -42,16 +45,11 @@ class Game{
         ]
         this.currentNPC.SetDialogue(text, options, responses, 2);
 
-        // The choices the player has made
-        this.playerChoices = {
-            NPCOne : [],
-            NPCTwo : [],
-            NPCThree : [],
-            NPCFour : []
-        };
-
         // Player object which is used in controls.js and here
         this.player = new PlayerObject();
+        this.#gameState = "running";
+        this.#timeSinceGameEnd = 0;
+        this.#anim = null;
     }
 
     // Called every frame that the player isn't interacting with an NPC
@@ -61,55 +59,167 @@ class Game{
         this.timeSincePreviousFrame = timeNow - this.#timeAtPreviousFrame;
         this.#timeAtPreviousFrame = timeNow;
         
-        // If player isn't talking to the current NPC
-        if (this.currentNPC.npcStatus == "idle"){
-            // Applies gravity to player if the player isn't jumping
-            if (this.player.movementKeyStates.w == false){
-                this.player.ApplyGravity();
+        if (this.#gameState == "running"){
+            // If player isn't talking to the current NPC
+            if (this.currentNPC.npcStatus == "idle"){
+                // Applies gravity to player if the player isn't jumping
+                if (this.player.movementKeyStates.w == false){
+                    this.player.ApplyGravity();
+                }
+                
+                // Evaluates player movement and draws everything on screen
+                this.player.EvaluateMovement();
+                this.DrawThingsOnScreen();
+            }
+    
+            // If player needs to make a choice 
+            else if (this.currentNPC.npcStatus == "waiting for response"){
+                this.currentNPC.dialogueBox.FindHovering();
+                this.currentNPC.dialogueBox.Render();
+            }
+    
+            // If player needs to confirm they have seen the response
+            else if (this.currentNPC.npcStatus == "waiting for confirmation"){
+                this.currentNPC.textBox.Render();
             }
             
-            // Evaluates player movement and draws everything on screen
-            this.player.EvaluateMovement();
-            this.DrawThingsOnScreen();
+            // When a player is talking to an NPC
+            else if (this.currentNPC.npcStatus == "finished"){
+                // Ends interaction
+                this.OpenNextDoor();
+                this.GivePlayerControl();
+                
+                // Removes first NPC in array and updates new curretNPC
+                this.NPCs.splice(0, 1);
+                this.currentNPC = this.NPCs[0];
+    
+                // Setup next NPC ready for dialogue 
+                this.SetupNextDialogue();
+    
+                // If all NPC have been talked to the game ends
+                if (this.NPCs.length == 0){
+                    this.#gameState == ending;
+                    this.context.globalAlpha = 0;
+                    this.context.fillStyle = "#000000";
+                }
+            }
         }
 
-        // If player needs to make a choice 
-        else if (this.currentNPC.npcStatus == "waiting for response"){
-            this.currentNPC.dialogueBox.FindHovering();
-            this.currentNPC.dialogueBox.Render();
-        }
-
-        // If player needs to confirm they have seen the response
-        else if (this.currentNPC.npcStatus == "waiting for confirmation"){
-            this.currentNPC.textBox.Render();
+        else if (this.#gameState == "ending"){
+            this.#timeSinceGameEnd += this.timeSincePreviousFrame;
+            this.context.globalAlpha += 1 / 30000000 * this.#timeSinceGameEnd;
+            this.context.fillRect(0, 0, 1280, 720);
+            if (this.context.globalAlpha >= 0.9){
+                this.#gameState = "ended";
+            }
         }
         
-        // When a player is talking to an NPC
-        else if (this.currentNPC.npcStatus == "finished"){
-            // Ends interaction
-            this.OpenNextDoor();
-            this.GivePlayerControl();
-            
-            // Removes first NPC in array and updates new curretNPC
-            this.NPCs.splice(0, 1);
-            this.currentNPC = this.NPCs[0];
-
-            // Setup next NPC ready for dialogue 
-            this.SetupNextDialogue();    
+        else if (this.#gameState == "ended"){
+            cancelAnimationFrame(this.#anim);
         }
         // Calls the next frame
-        requestAnimationFrame(this.Update.bind(this));
+        this.#anim = window.requestAnimationFrame(this.Update.bind(this));
     }
     
     SetupNextDialogue(){
-        // TODO
+        // If on 2nd NPC
+        if (this.NPCs.length == 3){
+            var text = "2 trials remain";
+            var options = [
+                "Why am I here?",
+                "How did I get here?"
+            ];
+            var responses = [
+                "A peacekeeper must be instated",
+                "The ancient ones brought you here for the trials"
+            ];
+            // Puts them at the front of the array
+            options = [this.missedDialogue[0][0]].concat(options);
+            responses = [this.missedDialogue[0][1]].concat(responses);
+            this.missedDialogue = [];
+
+            // Adds dialogue to the NPC
+            this.currentNPC.SetDialogue(text, options, responses, 2);
+        }
+
+        // If on 3rd NPC
+        else if (this.NPCs.length == 2){
+            var text = "Only 1 trial remains, are you excited?";
+            var options = [
+                "What happens after the final trial?",
+                "..."
+            ];
+            var responses = [
+                "...",
+                "..."
+            ];
+
+            // Puts them at the front of the array
+            options = [this.missedDialogue[0][0]].concat(options);
+            responses = ["You have asked enough questions mortal, now perish."].concat(responses);
+            this.missedDialogue = [];
+
+            // Adds dialogue to the NPC
+            this.currentNPC.SetDialogue(text, options, responses);
+        }
+
+        // If on last NPC
+        else if (this.NPCs.length == 1){
+            // Sets the monologue (text before player is able to respond)
+            var monologue = [
+                "We are the ancient ones, as old as time...",
+                "We instate the guardians of planets...",
+                "You defeated the moon lord and showed great promise..."
+            ];
+            this.currentNPC.SetMonologue(monologue);
+
+            var text = "You have been deemed worthy, the new moon lord has been chosen";
+            var options = [
+                "(peaceful)",
+                "(neutral)",
+                "(hostile)"
+            ];
+            var responses = [
+                "We are glad you accept the role the ritual will now begin.",
+                "The ritual will now begin.",
+                "A shame that such a promising successor would act so foolish, your end is now."
+            ];
+
+            // Add dialogue to the NPC
+            this.currentNPC.SetDialogue(text, options, responses);
+        }
     }
 
+    // Places NPCs in the correct locations
+    DefineNPCs(){
+        var npcSprite = document.getElementById("NPC");
+        var thisNPC;
+        for (var i = 0; i < 7; i += 2){
+            thisNPC = new NPC(1380 * i + Math.round(690 - npcSprite.width / 2), 720 - this.floor.height - npcSprite.height, npcSprite);
+            this.NPCs.push(thisNPC);
+        }
+    }
+    
+    // Opens next closest door by removing it from the list of things to render and check collision for
+    OpenNextDoor(){
+        for (var i = 0; i < this.terrainObjects.length; i++){
+            if (this.terrainObjects[i] == this.doors[0]){
+                this.terrainObjects.splice(i, 1);
+            }
+        }
+        this.doors.splice(0, 1);
+    }
+    
+    // Gives player control, used after interaction with NPC ended
+    GivePlayerControl(){
+        this.player.interacting = false;
+    }
+    
     // Function to make terrain objects array
     DefineTerrainObjects(){
         // The 2 walls on either side of the map
         var sprite = document.getElementById("wall100x1480");
-        const wall1 = new Terrain(-100, 0, sprite);
+        const wall1 = new Terrain(0, 0, sprite);
         const wall2 = new Terrain(9660, 0, sprite); 
         
         // Floor and ceiling
@@ -153,31 +263,6 @@ class Game{
         }
     }
     
-    // Places NPCs in the correct locations
-    DefineNPCs(){
-        var npcSprite = document.getElementById("NPC");
-        var thisNPC;
-        for (var i = 0; i < 7; i += 2){
-            thisNPC = new NPC(1380 * i + Math.round(690 - npcSprite.width / 2), 720 - this.floor.height - npcSprite.height, npcSprite);
-            this.NPCs.push(thisNPC);
-        }
-    }
-    
-    // Opens next closest door by removing it from the list of things to render and check collision for
-    OpenNextDoor(){
-        for (var i = 0; i < this.terrainObjects.length; i++){
-            if (this.terrainObjects[i] == this.doors[0]){
-                this.terrainObjects.splice(i, 1);
-            }
-        }
-        this.doors.splice(0, 1);
-    }
-    
-    // Gives player control, used after interaction with NPC ended
-    GivePlayerControl(){
-        this.player.interacting = false;
-    }
-    
     // Function to draw things on the screen when player isn't interacting with an NPC
     DrawThingsOnScreen(){
         // Fills the canvas with white colour
@@ -190,8 +275,8 @@ class Game{
         if (this.player.x > 690){
             xdisplacement = this.player.x - 690;
             // Stops the camera at the final wall
-            if (xdisplacement > 9660 - 1280){
-                xdisplacement = 9660 - 1280;
+            if (xdisplacement > 9560 - 1180){
+                xdisplacement = 9560 - 1180;
             }
         }
         
@@ -211,7 +296,7 @@ class Game{
     
     // This is used in the bottom of this file to start the gameloop
     Start(){
-        requestAnimationFrame(this.Update.bind(this));
+        this.#anim = window.requestAnimationFrame(this.Update.bind(this));
     }
 }
 

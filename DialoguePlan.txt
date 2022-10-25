@@ -15,7 +15,7 @@ The trials are going to begin (ask 2)
         The ancient ones brought you here to do the trials
 
 Only 1 trial remains, are you excited?
-    - What's happens after the final trial?
+    - What happens after the final trial?
         ...
     - Whichever was not asked previously
         ENOUGH QUESTIONS, DIE (stabs him)
@@ -32,3 +32,5 @@ You have been deemed worthy, the new moon lord has been chosen
         The ritual will now begin.
     - (Violence)
         A shame that such a promising successor would act so foolish, your end is now.
+
+1 = 3000x

@@ -172,6 +172,7 @@ class DialogueBox{
         game.context.font = this.#font;
         // Makes it so that the coordinates used to draw text are the top left coordinates
         game.context.textBaseline = "top";
+        game.context.textAlign = "left";
 
         game.context.drawImage(this.#sprite, this.#x, this.#y);
         // Shades the dialogue area in black

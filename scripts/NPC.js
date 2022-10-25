@@ -7,6 +7,8 @@ class NPC{
     #listOfOptions;
     #listOfResponses;
     #numQuestionsPlayerCanAsk;
+    #monologueMode;
+    #monologueText;
 
     // Dialogues is a list of strings [string, string1, string2]
     // Options is a list of lists for each dialogue [[options], [options1], [options2]]
@@ -26,13 +28,24 @@ class NPC{
         // The status of the NPC, can be idle, waiting for response, waiting for confirmation or finished
         this.npcStatus = "idle";
 
-        // Current texts
+        // Current texts as set by game.js
         this.#text = "";
         this.#options = [];
         this.#responses = [];
+        // Sometimes the player can ask more than 1 of the questions displayed
         this.#numQuestionsPlayerCanAsk;
+        // Monologue mode is for when the NPC says things before the player can speak
+        this.#monologueMode = false;
+        // List of text that is set in game.js
+        this.#monologueText = [];
     }
     
+    // Called in game.js
+    SetMonologue(listOfText){
+        this.#monologueMode = true;
+        this.#monologueText = listOfText;
+    }
+
     // Called when the dialogue for the previous NPC has finished and determined this NPC's dialogue
     SetDialogue(text, options, responses, numPlayerCanAsk = 1){
         this.#text = text;
@@ -45,14 +58,22 @@ class NPC{
     
     // Called from controls.js when the player interacts with the NPC
     Interact(){
-        this.npcStatus = "waiting for response";
+        if (this.#monologueMode){
+            // Makes it so that the textbox is displayed and not the dialoguebox
+            this.npcStatus = "waiting for confirmation";
+            // Adds first line of text to textbox
+            this.textBox.SetText(this.#monologueText.slice(0,1));
+        }
+
+        else{
+            this.npcStatus = "waiting for response";
+        }
     }
 
     // Called from controls.js
     PlayerMadeChoice(){
         console.log(`Player made a choice: ${this.dialogueBox.hovering}`);
         var playerChoice = this.dialogueBox.hovering;
-        game.playerChoices.NPCOne.push(playerChoice);
         this.#numQuestionsPlayerCanAsk -= 1;
         // Finds NPC response to question player asked
         var chosenOptionIndex = this.#options.indexOf(playerChoice);
@@ -80,6 +101,17 @@ class NPC{
 
     // Called from controls.js
     PlayerConfirmedOnResponse(){
-        this.npcStatus = "finished";
+        if (this.#monologueMode){
+            if (this.#monologueText == []){
+                this.#monologueMode = false;
+                this.Interact();
+            }
+            else{
+                this.textBox.SetText(this.#monologueText.splice(0, 1));
+            }
+        }
+        else{
+            this.npcStatus = "finished";
+        }
     }
 }
