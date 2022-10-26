@@ -87,6 +87,8 @@ class Game{
             else if (this.currentNPC.npcStatus == "finished" && this.NPCs.length > 1){
                 // Ends interaction
                 this.OpenNextDoor();
+                //! Would need to be removed if the rooms between NPC rooms were filled 
+                this.OpenNextDoor();
                 this.GivePlayerControl();
                 
                 // Removes first NPC in array and updates new curretNPC
